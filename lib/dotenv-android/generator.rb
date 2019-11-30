@@ -60,7 +60,7 @@ module DotEnvAndroid
       requests
     end
 
-    def get_values(requests)      
+    def get_values(requests)
       values = {}
 
       requests.each do |request|
@@ -73,25 +73,25 @@ module DotEnvAndroid
       values
     end
 
-    def get_package_header
+    def package_header
       package_name_header = "package #{@options.package_name}"
 
-      if !@options.package_name.include? "."
+      unless @options.package_name.include? '.'
         package_name = @all_env_vars[@options.package_name]
         @ui.fail("Cannot find package name in .env file with key, #{@options.package_name}") if package_name.nil?
         package_name_header = "package #{package_name}"
-      end 
+      end
 
       @ui.debug("Package name header: #{package_name_header}")
 
-      return package_name_header
-    end 
+      package_name_header
+    end
 
     def generate_output(env_variables)
       @ui.verbose("Outputting environment variables to #{@options.out}")
 
-      package_name_header = get_package_header
-      file_contents = "#{package_name_header}\n\n"      
+      package_name_header = package_header
+      file_contents = "#{package_name_header}\n\n"
       file_contents += "object Env {\n\n"
       env_variables.each do |key, value|
         file_contents += "  val #{DotEnvAndroid::Util.snake_to_camel(key)} = \"#{value}\"\n"
