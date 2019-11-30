@@ -11,7 +11,7 @@ require_relative './version'
 require 'dotenv'
 
 module DotEnvAndroid
-  Options = Struct.new(:source, :out, :verbose, :debug)
+  Options = Struct.new(:source, :out, :verbose, :debug, :package_name)
 
   class CLI
     def initialize
@@ -47,6 +47,9 @@ module DotEnvAndroid
           options.verbose = true
           options.debug = true
         end
+        opts.on('--package PACKAGE_NAME', 'Package name to add to the top of the generated Env.kt file (example: com.yourdomain.app, or PACKAGE_NAME environment variable found in .env)') do |package_name|
+          options.package_name = package_name
+        end
         opts.on('-o', '--out FILE', 'Output file (example: Path/Env.kt)') do |out|
           options.out = out
         end
@@ -67,6 +70,7 @@ module DotEnvAndroid
     def assert_options
       prefix = '[ERROR]'
       @ui.fail("#{prefix} --source required") unless @options.source
+      @ui.fail("#{prefix} --package required") unless @options.package_name
     end
   end
 end

@@ -22,17 +22,26 @@ gem install dotenv-android
 val apiHost: String = Env.apiHost
 ```
 
-At first, Android Studio will complain that `Env.apiHost` cannot be found. Don't worry. We will be fixing that. `dotenv-android` CLI crawls your source code looking for `Env.X` requests and generating a `Env.kt` file for you! Anytime you want to use environmental variables, you just need to add it to your source. Super easy. 
+At first, Android Studio will complain that `Env.apiHost` cannot be found. Don't worry. We will be fixing that. `dotenv-android` CLI crawls your source code looking for `Env.X` requests and generating a `Env.kt` file for you! Anytime you want to use environmental variables, you just need to add it to your source. Super easy. If `dotenv-android` cannot find the variable in your `.env` file, it will throw an error so you can feel confident that if your app compiles, everything will work great. 
 
-* In your `app/build.gradle` file, add the following to the bottom of the file:
+* Create a bash script in the root of your project, `generate_env.sh`, with the contents:
 
 ```
-task buildEnv << {
-    dotenv-android --source app/src/main/java/com/example/
+#!/bin/bash
+
+dotenv-android --source app/src/main/java/com/example/myapplication/ --package PACKAGE_NAME
+```
+
+In your `app/build.gradle` file, add the following to the bottom of the file:
+```
+task generateEnv(type:Exec) {
+    workingDir '../'
+    commandLine './generate_env.sh'
 }
-
-build.dependsOn buildEnv
+preBuild.dependsOn generateEnv
 ```
+
+You have just created a Gradle task that will run every time that you build your app. This will run the `dotenv-android` CLI to generate the `Env.kt` file each time you build! 
 
 * Run a build in Android Studio to run the `dotenv-android` CLI tool. 
 

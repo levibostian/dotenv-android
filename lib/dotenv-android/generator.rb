@@ -14,6 +14,8 @@ module DotEnvAndroid
       @options = options
 
       @ui = DotEnvAndroid::UI.new(@options.verbose, @options.debug)
+
+      @all_env_vars = Dotenv.parse('.env')
     end
 
     def start
@@ -23,7 +25,7 @@ module DotEnvAndroid
     end
 
     def iterate_source
-      source_pattern = File.expand_path("#{@options.source}/**/*.kotlin")
+      source_pattern = File.expand_path("#{@options.source}/**/*.kt")
       @ui.verbose("Searching for environment vars in source: #{source_pattern}")
 
       requests = Set[]
@@ -58,24 +60,39 @@ module DotEnvAndroid
       requests
     end
 
-    def get_values(requests)
-      variables = Dotenv.parse('.env')
+    def get_values(requests)      
       values = {}
 
       requests.each do |request|
-        @ui.fail("Environment variable #{request} not found in .env") unless variables[request]
+        @ui.fail("Environment variable #{request} not found in .env") unless @all_env_vars[request]
 
-        values[request] = variables[request]
+        values[request] = @all_env_vars[request]
       end
 
       @ui.debug("Values: #{values}")
       values
     end
 
+    def get_package_header
+      package_name_header = "package #{@options.package_name}"
+
+      if !@options.package_name.include? "."
+        package_name = @all_env_vars[@options.package_name]
+        @ui.fail("Cannot find package name in .env file with key, #{@options.package_name}") if package_name.nil?
+        package_name_header = "package #{package_name}"
+      end 
+
+      @ui.debug("Package name header: #{package_name_header}")
+
+      return package_name_header
+    end 
+
     def generate_output(env_variables)
       @ui.verbose("Outputting environment variables to #{@options.out}")
 
-      file_contents = "object Env {\n\n"
+      package_name_header = get_package_header
+      file_contents = "#{package_name_header}\n\n"      
+      file_contents += "object Env {\n\n"
       env_variables.each do |key, value|
         file_contents += "  val #{DotEnvAndroid::Util.snake_to_camel(key)} = \"#{value}\"\n"
       end
