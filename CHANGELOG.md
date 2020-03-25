@@ -1,3 +1,8 @@
+# [0.1.2] - 2020-03-25
+
+## Fixed 
+- Special characters at end of var ignored 
+
 # [0.1.1] - 2019-11-30
 
 ## Fixed 
