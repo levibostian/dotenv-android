@@ -40,6 +40,8 @@ export PATH="$PATH:~/.rbenv/shims/"
 dotenv-android --source app/src/main/java/com/example/myapplication/ --package PACKAGE_NAME
 ```
 
+> Tip: You can put the package name in your `.env` file with key `PACKAGE_NAME` as well instead of as a CLI option. 
+
 In your `app/build.gradle` file, add the following to the bottom of the file:
 ```
 task generateEnv(type:Exec) {
