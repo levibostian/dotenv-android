@@ -69,7 +69,7 @@ module DotEnvAndroid
       requests.each do |request|
         @ui.warning("Environment variable #{request} not found in .env") unless ENV[request]
 
-        values[request] = ENV[request]
+        values[request] = ENV[request] if ENV[request]
       end
 
       @ui.debug("Values: #{values}")
@@ -77,7 +77,7 @@ module DotEnvAndroid
     end
 
     def package_header
-      return "package #{@options.package_name}"
+      "package #{@options.package_name}"
     end
 
     def generate_output(env_variables)

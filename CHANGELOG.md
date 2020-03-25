@@ -1,3 +1,8 @@
+# [0.2.1] - 2020-03-26
+
+## Fixed
+- If env var not found in .env file, do not add it to the generated Env file.
+
 # [0.2.0] - 2020-03-26
 
 ## Changed

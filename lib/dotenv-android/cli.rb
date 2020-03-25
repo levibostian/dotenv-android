@@ -68,11 +68,11 @@ module DotEnvAndroid
 
       opt_parser.parse!(ARGV)
 
-      if options.package_name.nil? 
-        options.package_name = ENV["PACKAGE_NAME"]
+      if options.package_name.nil?
+        options.package_name = ENV['PACKAGE_NAME']
 
-        @ui.fail("Cannot find package name in .env file with key, PACKAGE_NAME, or as a CLI argument") if options.package_name.nil?
-      end 
+        @ui.fail('Cannot find package name in .env file with key, PACKAGE_NAME, or as a CLI argument') if options.package_name.nil?
+      end
 
       options
     end
