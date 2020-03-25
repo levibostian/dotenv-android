@@ -29,6 +29,14 @@ At first, Android Studio will complain that `Env.apiHost` cannot be found. Don't
 ```
 #!/bin/bash
 
+# You may need to edit the PATH environment variable in order for dotenv-android to execute. It may not be found at first. 
+# After you run `gem install dotenv-android`, run `which dotenv-android` to find out where it is located. 
+# You may need to add the path to that executable to your script. Android Studio launches with it's own PATH
+# that may differ from your system's PATH.
+# To see what the PATH variable contains in Android Studio, uncomment the line below and perform a build to run this script:
+# /usr/bin/env
+export PATH="$PATH:~/.rbenv/shims/"
+
 dotenv-android --source app/src/main/java/com/example/myapplication/ --package PACKAGE_NAME
 ```
 
