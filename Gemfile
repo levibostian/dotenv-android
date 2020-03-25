@@ -4,4 +4,4 @@ source 'https://rubygems.org'
 
 gemspec
 
-gem "danger", "~> 6.3"
+gem 'danger', '~> 6.3'
