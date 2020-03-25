@@ -15,7 +15,7 @@ module DotEnvAndroid
 
       @ui = DotEnvAndroid::UI.new(@options.verbose, @options.debug)
 
-      @all_env_vars = Dotenv.parse('.env')
+      Dotenv.load('.env')
     end
 
     def start
@@ -67,9 +67,9 @@ module DotEnvAndroid
       values = {}
 
       requests.each do |request|
-        @ui.fail("Environment variable #{request} not found in .env") unless @all_env_vars[request]
+        @ui.warning("Environment variable #{request} not found in .env") unless ENV[request]
 
-        values[request] = @all_env_vars[request]
+        values[request] = ENV[request]
       end
 
       @ui.debug("Values: #{values}")
@@ -77,17 +77,7 @@ module DotEnvAndroid
     end
 
     def package_header
-      package_name_header = "package #{@options.package_name}"
-
-      unless @options.package_name.include? '.'
-        package_name = @all_env_vars[@options.package_name]
-        @ui.fail("Cannot find package name in .env file with key, #{@options.package_name}") if package_name.nil?
-        package_name_header = "package #{package_name}"
-      end
-
-      @ui.debug("Package name header: #{package_name_header}")
-
-      package_name_header
+      return "package #{@options.package_name}"
     end
 
     def generate_output(env_variables)

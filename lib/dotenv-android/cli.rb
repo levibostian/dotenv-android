@@ -25,6 +25,8 @@ module DotEnvAndroid
     end
 
     def parse_options
+      Dotenv.load('.env')
+
       options = Options.new
       options.verbose = false
       options.debug = false
@@ -48,7 +50,7 @@ module DotEnvAndroid
           options.verbose = true
           options.debug = true
         end
-        opts.on('--package PACKAGE_NAME', 'Package name to add to the top of the generated Env.kt file (example: com.yourdomain.app, or PACKAGE_NAME environment variable found in .env)') do |package_name| # rubocop:disable Metrics/LineLength
+        opts.on('--package', 'Package name to add to the top of the generated Env.kt file (example: com.yourdomain.app, or PACKAGE_NAME environment variable found in .env)') do |package_name| # rubocop:disable Metrics/LineLength
           options.package_name = package_name
         end
         opts.on('-o', '--out FILE', 'Output file (example: Path/Env.kt)') do |out|
@@ -66,13 +68,18 @@ module DotEnvAndroid
 
       opt_parser.parse!(ARGV)
 
+      if options.package_name.nil? 
+        options.package_name = ENV["PACKAGE_NAME"]
+
+        @ui.fail("Cannot find package name in .env file with key, PACKAGE_NAME, or as a CLI argument") if options.package_name.nil?
+      end 
+
       options
     end
 
     def assert_options
       prefix = '[ERROR]'
       @ui.fail("#{prefix} --source required") unless @options.source
-      @ui.fail("#{prefix} --package required") unless @options.package_name
     end
   end
 end

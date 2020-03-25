@@ -1,3 +1,9 @@
+# [0.2.0] - 2020-03-26
+
+## Changed
+- Allow package name to exist in the .env file instead of CLI param
+- Show warning message instead of abort when a value is not found in .env file. 
+
 # [0.1.2] - 2020-03-25
 
 ## Fixed 
