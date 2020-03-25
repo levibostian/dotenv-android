@@ -46,9 +46,12 @@ module DotEnvAndroid
       requests = []
 
       File.readlines(file).each do |line|
-        line.split(' ').each do |word|
-          # https://regexr.com/4pmp0
-          next unless /Env\.[a-z]\w*/.match? word
+        # Regex matcher: https://regexr.com/4rf2s
+        matches = line.match(/Env\.[a-z]\w*/)
+        next if matches.nil?
+
+        matches.to_a.each do |word|
+          word = word.gsub('_', '') # \w in regex pattern above allows underscores. We want to remove those.
 
           requested_variable = word.split('.')[1]
           requested_variable = DotEnvAndroid::Util.to_snakecase(requested_variable).upcase
