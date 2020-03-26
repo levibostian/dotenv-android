@@ -3,7 +3,7 @@
 module DotEnvAndroid
   class Version
     def self.get
-      '0.2.1'
+      '0.2.2'
     end
   end
 end

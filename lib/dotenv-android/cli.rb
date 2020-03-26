@@ -50,7 +50,7 @@ module DotEnvAndroid
           options.verbose = true
           options.debug = true
         end
-        opts.on('--package', 'Package name to add to the top of the generated Env.kt file (example: com.yourdomain.app, or PACKAGE_NAME environment variable found in .env)') do |package_name| # rubocop:disable Metrics/LineLength
+        opts.on('--package PACKAGE_NAME', 'Package name to add to the top of the generated Env.kt file (example: com.yourdomain.app, or PACKAGE_NAME environment variable found in .env)') do |package_name| # rubocop:disable Metrics/LineLength
           options.package_name = package_name
         end
         opts.on('-o', '--out FILE', 'Output file (example: Path/Env.kt)') do |out|

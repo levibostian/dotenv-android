@@ -1,3 +1,8 @@
+# [0.2.2] - 2020-03-26
+
+## Fixed
+- package name header in output file has correct value
+
 # [0.2.1] - 2020-03-26
 
 ## Fixed
