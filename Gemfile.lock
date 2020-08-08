@@ -42,7 +42,8 @@ GEM
     git (1.6.0)
       rchardet (~> 1.8)
     jaro_winkler (1.5.4)
-    kramdown (2.1.0)
+    kramdown (2.3.0)
+      rexml
     kramdown-parser-gfm (1.1.0)
       kramdown (~> 2.0)
     multipart-post (2.1.1)
