@@ -50,7 +50,7 @@ publishing {
         pluginPublication (MavenPublication) {
             from    components.java
             groupId    project.group
-            artifactId "dotenv-android"
+            artifactId "dotenv"
             version    project.version
         }
     }
@@ -64,11 +64,11 @@ pluginBundle {
 
 gradlePlugin {
     plugins {
-        resourceProviderPlugin {
-            id = 'earth.levi.dotenvandroid'
-            displayName = 'dotenv Android'
+        dotenvPlugin {
+            id = 'earth.levi.dotenv'
+            displayName = 'dotenv'
             description = 'Generate source code file from .env values'
-            implementationClass = 'earth.levi.dotenvandroid.ResourceProviderPlugin'
+            implementationClass = 'earth.levi.dotenv.DotEnvPlugin'
         }
     }
 }

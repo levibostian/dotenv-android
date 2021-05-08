@@ -59,11 +59,21 @@ You have just created a Gradle task that will run every time that you build your
 
 ## Development 
 
-```bash
-$> bundle install
+The easiest way to get started developing this project is to import the root level `build.gradle` file using Intellij CE. This project includes a very slim Android app in the `androidApp/` directory of this project. It's recommended to import the `androidApp/build.gradle` file into Android Studio.
+
+1. Get both projects open on your computer using Intellij and Android Studio.
+2. Write code for the Gradle plugin in Intellij. When you're ready to test out the plugin, run this command in the root level of this project:
+```
+./gradlew clean build publishToMavenLocal
 ```
 
-You're ready to start developing! 
+Then, perform a Gradle sync in Android Studio for the Android app. 
+
+3. You're now ready to test the plugin inside of Android Studio. You can perform a build of the Android app within Android Studio to quickly test it. 
+
+If you need to debug the plugin, the best way is to enable logging for the Android app compiling.
+
+From the `androidApp/` directory, run the command: `./gradlew :app:generateDebugDotenv --info`. This will enable the log level *info* (there are many other [log levels including --debug](https://docs.gradle.org/current/userguide/logging.html#sec:choosing_a_log_level)). You can read all of your log statements here to debug the plugin. 
 
 ## Deployment 
 
