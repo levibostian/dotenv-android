@@ -5,7 +5,7 @@ import android.os.Bundle;
 import android.widget.TextView;
 import androidx.annotation.Nullable;
 
-// It's important that projects that have Java code in it will also be able to work with the plugin. 
+// It's important that projects that have Java code in it will also be able to work with the plugin.
 class JavaActivity extends Activity {
 
     @Override
