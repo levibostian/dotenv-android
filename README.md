@@ -2,60 +2,47 @@
 
 Give access to `.env` environment variables file within your Android projects. 
 
-`dotenv-android` is a simple CLI tool you can run on each Gradle build to inject environment variables into your Android app. This tool was inspired by [the twelve-factor app](https://12factor.net/config) to make environmental changes in your app simple. 
-
-*Note: At this time, only Kotlin is supported.*
+`dotenv-android` is a simple Gradle plugin that generates a source code file in your Android project. This allows you to reference values in your project's `.env` file. This tool was inspired by [the twelve-factor app](https://12factor.net/config) to make environmental changes in your app simple.
 
 # Getting started
 
-* Install this tool:
+* This Gradle plugin has a dependency that you need to manually install on your machine (In the future, we hope to make this process automatic to avoid this step). Follow the instructions to [download the `dotenv` CLI program](https://github.com/levibostian/dotenv#install) to your machine. 
+  
+* In your Android app's `build.gradle` file (probably located at `app/build.gradle`), add the dotenv-android plugin:
 
-```
-gem install dotenv-android
-```
-
-* In the root of your Android project, create a `.env` file and store all of the environment variables you wish inside. (Make sure to add this file to your `.gitignore` to avoid checking it into source control!)
-
-* In your Android app's source code, reference environment variables that you want to use:
-
-```kotlin
-val apiHost: String = Env.apiHost
-```
-
-At first, Android Studio will complain that `Env.apiHost` cannot be found. Don't worry. We will be fixing that. `dotenv-android` CLI crawls your source code looking for `Env.X` requests and generating a `Env.kt` file for you! Anytime you want to use environmental variables, you just need to add it to your source. Super easy. If `dotenv-android` cannot find the variable in your `.env` file, it will throw an error so you can feel confident that if your app compiles, everything will work great. 
-
-* Create a bash script in the root of your project, `generate_env.sh`, with the contents:
-
-```
-#!/bin/bash
-
-# You may need to edit the PATH environment variable in order for dotenv-android to execute. It may not be found at first. 
-# After you run `gem install dotenv-android`, run `which dotenv-android` to find out where it is located. 
-# You may need to add the path to that executable to your script. Android Studio launches with it's own PATH
-# that may differ from your system's PATH.
-# To see what the PATH variable contains in Android Studio, uncomment the line below and perform a build to run this script:
-# /usr/bin/env
-export PATH="$PATH:~/.rbenv/shims/"
-
-dotenv-android --source app/src/main/java/com/example/myapplication/ --package PACKAGE_NAME
-```
-
-> Tip: You can put the package name in your `.env` file with key `PACKAGE_NAME` as well instead of as a CLI option. 
-
-In your `app/build.gradle` file, add the following to the bottom of the file:
-```
-task generateEnv(type:Exec) {
-    workingDir '../'
-    commandLine './generate_env.sh'
+```groovy
+plugins {
+  id "earth.levi.dotenv-android"
 }
-preBuild.dependsOn generateEnv
 ```
 
-You have just created a Gradle task that will run every time that you build your app. This will run the `dotenv-android` CLI to generate the `Env.kt` file each time you build! 
+You also need to configure the plugin in your `build.gradle` file:
 
-* Run a build in Android Studio to run the `dotenv-android` CLI tool. 
+```groovy
+dotenv {
+    // the package name that is added to the top of your source code file: `import X.Y.Z`
+    packageName = "com.foo.bar"
+    // the path to the source code in your Android app module. This is probably `src/main/java` but could be something else like `src/main/kotlin`
+    sourcePath = "src/main/java/"
+}
+```
 
-* Done! 
+* Create a `.env` file in the root level of your Android app project. 
+
+Here is an example `.env` file:
+
+```
+ENABLE_LOGS=true
+API_KEY=XXX-YYY-ZZZ
+```
+
+* In your Kotlin or Java source code of your Android app, reference `.env` values by using this syntax:
+```kotlin
+val enableLogs = Env.enableLogs == "true"
+Env.apiKey 
+```
+
+At first, you will see your IDE (Android Studio) complain to you that it cannot find `Env.enableLogs`. That's ok! Build your Android app and the dotenv Gradle plugin will scan your source code, find the `Env.X` entries, and generate a source code file for you!
 
 ## Development 
 
@@ -77,10 +64,15 @@ From the `androidApp/` directory, run the command: `./gradlew :app:generateDebug
 
 ## Deployment 
 
-This gem is setup automatically to deploy to RubyGems on a git tag deployment. 
+We deploy to the [Gradle Plugin Portal](https://plugins.gradle.org/) to make using the plugin very easy. 
 
-* Add `RUBYGEMS_KEY` secret to Travis-CI's settings. 
-* Make a new git tag, push it up to GitHub. Travis will deploy for you. 
+After getting your API keys, run this command: 
+
+```
+PLUGIN_VERSION=1.0.0 ./gradlew publishPlugins -Pgradle.publish.key=XXX -Pgradle.publish.secret=YYY
+```
+
+> Note: Your plugin may require manual approval by Gradle team. The output of running the publishPlugins command will tell you if this is the case. 
 
 ## Author
 
