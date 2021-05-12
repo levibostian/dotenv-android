@@ -1,0 +1,88 @@
+/**
+ * Help on how to create and publish a gradle plugin:
+ * https://docs.gradle.org/current/userguide/publishing_gradle_plugins.html
+ * https://plugins.gradle.org/docs/submit
+ */
+
+buildscript {
+    ext.kotlin_version = '1.3.72'
+    repositories {
+        google()
+        mavenCentral()
+    }
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+
+plugins {
+    id 'java-gradle-plugin' // authors the gradle plugin
+    id 'com.gradle.plugin-publish' version '0.14.0' // publishes the gradle plugin
+    id 'maven-publish' // generates plugin metadata
+}
+apply plugin: 'kotlin'
+
+repositories {
+    google()
+    mavenCentral()
+}
+
+dependencies {
+    implementation gradleApi()
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+    compileOnly("com.android.tools.build:gradle:3.6.3")
+}
+
+compileKotlin {
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+}
+compileTestKotlin {
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+}
+
+ext.getPluginVersion = { ->
+    def envVersion = System.getenv('PLUGIN_VERSION')
+    if (envVersion != "" && envVersion != null) return envVersion
+    else return '1.0.0'
+}
+
+group 'earth.levi'
+version getPluginVersion() // version used when publishing
+
+// configure 'com.gradle.plugin-publish'. from: https://docs.gradle.org/current/userguide/publishing_gradle_plugins.html#configure_the_plugin_publishing_plugin
+pluginBundle {
+    website = 'https://github.com/levibostian/dotenv-android'
+    vcsUrl = 'https://github.com/levibostian/dotenv-android'
+    description = 'Android gradle plugin to use .env file in your Android app'
+    tags = ['android', 'gradle', 'kotlin', 'dotenv', 'dotenv-android', '.env']
+}
+
+// configure 'java-gradle-plugin'. from: https://docs.gradle.org/current/userguide/java_gradle_plugin.html
+gradlePlugin {
+    plugins {
+        dotenvPlugin {
+            id = 'earth.levi.dotenv-android'
+            displayName = 'dotenv-android'
+            description = 'Android gradle plugin to use .env file in your Android app'
+            implementationClass = 'earth.levi.dotenv.DotEnvPlugin'
+        }
+    }
+}
+
+/**
+ * Allows us to use maven local repository for local development purposes. Not required for other purposes.
+ */
+publishing {
+    publications {
+        pluginPublication (MavenPublication) {
+            from    components.java
+            groupId    project.group
+            artifactId "dotenv-android"
+            version    project.version
+        }
+    }
+}
