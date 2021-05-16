@@ -74,6 +74,12 @@ PLUGIN_VERSION=1.0.0 ./gradlew publishPlugins -Pgradle.publish.key=XXX -Pgradle.
 
 > Note: Your plugin may require manual approval by Gradle team. The output of running the publishPlugins command will tell you if this is the case. 
 
+### CLI setup
+
+This project use GitHub Actions to perform various tasks for us. To get GitHub Actions to work, you must create these secrets:
+
+1. `REPO_PUSH_TOKEN` - GitHub personal access token with `repos` scope. This allows CI server to push git commits to the GitHub repository. 
+
 ## Author
 
 * Levi Bostian - [GitHub](https://github.com/levibostian), [Twitter](https://twitter.com/levibostian), [Website/blog](http://levibostian.com)
