@@ -66,19 +66,22 @@ From the `androidApp/` directory, run the command: `./gradlew :app:generateDebug
 
 We deploy to the [Gradle Plugin Portal](https://plugins.gradle.org/) to make using the plugin very easy. 
 
-After getting your API keys, run this command: 
+* [Register for an account](https://plugins.gradle.org/user/register) with the Gradle Plugin Portal to get your set of API keys. 
+
+* Create a file on your machine with this format:
 
 ```
-PLUGIN_VERSION=1.0.0 ./gradlew publishPlugins -Pgradle.publish.key=XXX -Pgradle.publish.secret=YYY
+gradle.publish.key=<key here>
+gradle.publish.secret=<secret here>
 ```
 
-> Note: Your plugin may require manual approval by Gradle team. The output of running the publishPlugins command will tell you if this is the case. 
+Replace `<key here>` and `<secret here>` with your API key and secret you received after registering with Gradle Plugin Portal. 
 
-### CLI setup
+* Run `cat /path/to/file/you/made/above/file.txt | base64` and set the output string as a GitHub Actions secret in your GitHub repo. The secret key is `GRADLE_LOGIN_BASE64`. 
 
-This project use GitHub Actions to perform various tasks for us. To get GitHub Actions to work, you must create these secrets:
+* Set another GitHub Action secret `REPO_PUSH_TOKEN` - GitHub personal access token with `repos` scope. This allows CI server to push git commits to the GitHub repository. 
 
-1. `REPO_PUSH_TOKEN` - GitHub personal access token with `repos` scope. This allows CI server to push git commits to the GitHub repository. 
+* Done! The semantic-release tool will now deploy your gradle plugin to the portal every time you deploy a new version of the project. 
 
 ## Author
 

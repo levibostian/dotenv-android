@@ -9,6 +9,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2      
+      - name: Set up JDK
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'adopt'
+          java-version: '11' # We choose LTS: https://adoptopenjdk.net/
+      - name: Prepare gradle creds for deployment to Plugin Portal
+        run: |
+          mkdir -p $HOME/.gradle/
+          echo "$GRADLE_LOGIN_BASE64" | base64 --decode > $HOME/.gradle/gradle.properties
       - name: Deploy git tag and Gradle plugin release via Semantic Release 
         uses: cycjimmy/semantic-release-action@v2
         with: 
@@ -20,5 +29,6 @@ jobs:
             @semantic-release/changelog@5
             @semantic-release/git@9
             @semantic-release/github@7
+            @semantic-release/exec@5
         env:
           GITHUB_TOKEN: ${{ secrets.REPO_PUSH_TOKEN }}
