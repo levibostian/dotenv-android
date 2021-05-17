@@ -1,14 +1,18 @@
 package earth.levi.dotenv
 
-import org.gradle.api.Plugin
-import org.gradle.api.Project
-import java.io.File
-import java.nio.file.Files
-import java.nio.file.Paths
 import com.android.build.gradle.AppExtension
 import com.android.build.gradle.api.BaseVariant
+import earth.levi.dotenv.util.CliUtil
+import org.gradle.api.Plugin
+import org.gradle.api.Project
 import org.gradle.api.logging.LogLevel
 import org.gradle.api.tasks.SourceTask
+import java.io.*
+import java.nio.charset.StandardCharsets
+import java.nio.file.Files
+import java.nio.file.Paths
+import java.util.*
+
 
 open class DotEnvPluginExtension {
     /**
@@ -29,6 +33,14 @@ open class DotEnvPluginExtension {
 }
 
 class DotEnvPlugin : Plugin<Project> {
+
+    companion object {
+        const val PLUGIN_NAME = "dotenv"
+        const val COMPATIBLE_CLI_VERSION = "1.0.0" // the minimum version of the CLI tool `dotenv` that this gradle plugin supports.
+        const val NEXT_MAJOR_CLI_VERSION = "2" // if `MIN_CLI_VERSION` is `3.X.X`, this value is 4.
+
+        const val DOTENV_CLI_MANUAL_INSTALL_INSTRUCTIONS = "https://github.com/levibostian/dotenv#install"
+    }
 
     override fun apply(project: Project) {
         // gets the arguments for the plugin from the project's build.gradle file.
@@ -56,6 +68,13 @@ class DotEnvPlugin : Plugin<Project> {
         val generateEnvTask = project.task("generate${variant.name.capitalize()}Dotenv") {
             it.doLast {
                 // we have our chance to run the task now!
+                println("=== dotenv-android plugin running ===")
+                println("dotenv-android info:")
+                println("dotenv CLI compatible version: >= $COMPATIBLE_CLI_VERSION && < $NEXT_MAJOR_CLI_VERSION")
+
+                CliUtil.assertCliExist(project)
+                CliUtil.assertCliVersionCompatible(project)
+
                 generateEnvForVariant(project, extension, generatedCodeOutputDir)
             }
             it.group = "build"
@@ -99,7 +118,4 @@ class DotEnvPlugin : Plugin<Project> {
         }
     }
 
-    companion object {
-        const val PLUGIN_NAME = "dotenv"
-    }
 }

@@ -68,18 +68,11 @@ We deploy to the [Gradle Plugin Portal](https://plugins.gradle.org/) to make usi
 
 * [Register for an account](https://plugins.gradle.org/user/register) with the Gradle Plugin Portal to get your set of API keys. 
 
-* Create a file on your machine with this format:
+* Set some environment variable secrets for GitHub Actions:
 
-```
-gradle.publish.key=<key here>
-gradle.publish.secret=<secret here>
-```
-
-Replace `<key here>` and `<secret here>` with your API key and secret you received after registering with Gradle Plugin Portal. 
-
-* Run `cat /path/to/file/you/made/above/file.txt | base64` and set the output string as a GitHub Actions secret in your GitHub repo. The secret key is `GRADLE_LOGIN_BASE64`. 
-
-* Set another GitHub Action secret `REPO_PUSH_TOKEN` - GitHub personal access token with `repos` scope. This allows CI server to push git commits to the GitHub repository. 
+1. `GRADLE_PUBLISH_KEY` API key you received after registering with Gradle Plugin Portal. 
+2. `GRADLE_PUBLISH_SECRET` API key secret you received after registering with Gradle Plugin Portal. 
+3. `REPO_PUSH_TOKEN` - GitHub personal access token with `repos` scope. This allows CI server to push git commits to the GitHub repository. 
 
 * Done! The semantic-release tool will now deploy your gradle plugin to the portal every time you deploy a new version of the project. 
 
