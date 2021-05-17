@@ -1,3 +1,10 @@
+# [1.1.0](https://github.com/levibostian/dotenv-android/compare/1.0.0...1.1.0) (2021-05-17)
+
+
+### Features
+
+* verify CLI installed ([#18](https://github.com/levibostian/dotenv-android/issues/18)) ([55e4df4](https://github.com/levibostian/dotenv-android/commit/55e4df44014c1a8c6074335310bc1ff53deb73a3))
+
 # 1.0.0 (2021-05-16)
 
 
