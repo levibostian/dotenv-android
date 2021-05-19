@@ -1,0 +1,28 @@
+name: Tests
+on: ['push', 'pull_request']
+
+jobs:
+  test-plugin-runs:    
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    name: Test plugin on OS ${{ matrix.os }}
+    # skip if '[skip ci]' exists in commit message 
+    if: ${{ !contains(format('{0} {1}', github.event.head_commit.message, github.event.pull_request.title), '[skip ci]') }}
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up JDK
+      uses: actions/setup-java@v2
+      with:
+        distribution: 'adopt'
+        java-version: '11' # We choose LTS: https://adoptopenjdk.net/
+    - name: Setup Android SDK
+      uses: android-actions/setup-android@v2
+
+    - name: Build plugin 
+      run: ./gradlew clean build publishToMavenLocal
+
+    - name: Build Android app 
+      run: ./gradlew clean :app:assembleDebug
+      working-directory: androidApp

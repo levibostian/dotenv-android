@@ -2,12 +2,13 @@ package earth.levi.dotenv
 
 import com.android.build.gradle.AppExtension
 import com.android.build.gradle.api.BaseVariant
-import earth.levi.dotenv.util.CliUtil
+import earth.levi.dotenv.util.*
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.logging.LogLevel
 import org.gradle.api.tasks.SourceTask
 import java.io.*
+import java.lang.Exception
 import java.nio.charset.StandardCharsets
 import java.nio.file.Files
 import java.nio.file.Paths
@@ -40,6 +41,7 @@ class DotEnvPlugin : Plugin<Project> {
         const val NEXT_MAJOR_CLI_VERSION = "2" // if `MIN_CLI_VERSION` is `3.X.X`, this value is 4.
 
         const val DOTENV_CLI_MANUAL_INSTALL_INSTRUCTIONS = "https://github.com/levibostian/dotenv#install"
+        const val BUG_REPORT_FILE_URL = "https://github.com/levibostian/dotenv-android/issues/new"
     }
 
     override fun apply(project: Project) {
@@ -72,8 +74,15 @@ class DotEnvPlugin : Plugin<Project> {
                 println("dotenv-android info:")
                 println("dotenv CLI compatible version: >= $COMPATIBLE_CLI_VERSION && < $NEXT_MAJOR_CLI_VERSION")
 
-                CliUtil.assertCliExist(project)
-                CliUtil.assertCliVersionCompatible(project)
+                File(project.buildDir.absolutePath).resolve("dotenv").mkdirs() // make sure that build dir exists. if we run `gradlew clean` before running task, we might have an exception because build dir does not exist yet.
+
+                val cliInstalled = CliUtil.doesCliExist(project)
+                val cliInstalledVersionCompatible = CliUtil.isCliVersionCompatible(project)
+
+                if (!cliInstalled || !cliInstalledVersionCompatible) {
+                    println("downloading CLI dependency...")
+                    CliUtil.downloadCliBin(project)
+                }
 
                 generateEnvForVariant(project, extension, generatedCodeOutputDir)
             }
@@ -105,16 +114,32 @@ class DotEnvPlugin : Plugin<Project> {
         val sourcePath = project.projectDir.resolve(extension.sourcePath).absolutePath
         val packageName = extension.packageName
         val dotEnvFilePath = project.rootDir.absolutePath
-        project.logger.log(LogLevel.DEBUG, "source code path: $sourcePath")
-        project.logger.log(LogLevel.DEBUG, "package name: $packageName")
-        project.logger.log(LogLevel.DEBUG, ".env file path: $dotEnvFilePath")
+        project.logDebug("source code path: $sourcePath")
+        project.logDebug("package name: $packageName")
+        project.logDebug(".env file path: $dotEnvFilePath")
 
-        project.logger.log(LogLevel.INFO, "Generating Env.java file")
-        project.exec {
-            it.workingDir = path.toFile()
-            it.executable = "dotenv"
-            it.args = listOf("generate", "java", "--packageName", packageName, "--source", sourcePath, "--env", dotEnvFilePath, "--inputLang", "java,kotlin", "--verbose")
-            it.isIgnoreExitValue = false
+        project.logInfo("Generating Env.java file")
+
+        val outputStream = ByteArrayOutputStream()
+        try {
+            project.exec {
+                it.errorOutput = outputStream
+                it.standardOutput = outputStream
+                it.workingDir = path.toFile()
+                it.executable = project.dotenvCliBinPath()
+                it.args = listOf("generate", "java", "--packageName", packageName, "--source", sourcePath, "--env", dotEnvFilePath, "--inputLang", "java,kotlin", "--verbose")
+                it.isIgnoreExitValue = false
+            }
+
+            outputStream.toString("UTF-8").apply {
+                if (isNotBlank()) print(this)
+            }
+        } catch (err: Exception) {
+            // if the CLI has an error, we want to capture that and make it the output of the plugin error. If we don't, the gradle error will be generic like "executing command dotenv failed with non-zero exit code"
+            val errOutput = outputStream.toString("UTF-8")
+            if (!errOutput.isNullOrEmpty()) throw RuntimeException(errOutput)
+
+            throw err // if there was nothing sent to err/out steam, just throw the error we got. it might be a developer error with the plugin
         }
     }
 

@@ -30,6 +30,7 @@ repositories {
 dependencies {
     implementation gradleApi()
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+    implementation "org.apache.commons:commons-compress:1.2"
     compileOnly("com.android.tools.build:gradle:3.6.3")
 }
 

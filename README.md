@@ -6,15 +6,15 @@ Give access to `.env` environment variables file within your Android projects.
 
 # Getting started
 
-* This Gradle plugin has a dependency that you need to manually install on your machine (In the future, we hope to make this process automatic to avoid this step). Follow the instructions to [download the `dotenv` CLI program](https://github.com/levibostian/dotenv#install) to your machine. 
-  
 * In your Android app's `build.gradle` file (probably located at `app/build.gradle`), add the dotenv-android plugin:
 
 ```groovy
 plugins {
-  id "earth.levi.dotenv-android"
+  id "earth.levi.dotenv-android" version "<version-here>"
 }
 ```
+
+Replace `<version-here` with the [latest plugin version](https://plugins.gradle.org/plugin/earth.levi.dotenv-android). 
 
 You also need to configure the plugin in your `build.gradle` file:
 
@@ -26,6 +26,8 @@ dotenv {
     sourcePath = "src/main/java/"
 }
 ```
+
+> Tip: See `androidApp/` in this project for an example Android app project that uses the plugin. 
 
 * Create a `.env` file in the root level of your Android app project. 
 
@@ -39,10 +41,12 @@ API_KEY=XXX-YYY-ZZZ
 * In your Kotlin or Java source code of your Android app, reference `.env` values by using this syntax:
 ```kotlin
 val enableLogs = Env.enableLogs == "true"
-Env.apiKey 
+Env.apiKey
 ```
 
-At first, you will see your IDE (Android Studio) complain to you that it cannot find `Env.enableLogs`. That's ok! Build your Android app and the dotenv Gradle plugin will scan your source code, find the `Env.X` entries, and generate a source code file for you!
+At first, you will see your IDE (Android Studio) complain to you that it cannot find `Env.enableLogs` or `Env.apiKey`. That's expected behavior because this Gradle plugin has not executed yet. Build your Android app then you should see Android Studio find `Env.enableLogs` and `Env.apiKey` successfully.
+
+> Tip: When you build your app, this Gradle plugin outputs some debug information to help you in case you run into any issues. Like this: `Wrote file to: /code/dotenv-android/androidApp/app/build/generated/source/dotenv/debug/earth/levi/dotenv/Env.java`. Open this file on your computer to view what the Gradle plugin generated.
 
 ## Development 
 
@@ -60,7 +64,7 @@ Then, perform a Gradle sync in Android Studio for the Android app.
 
 If you need to debug the plugin, the best way is to enable logging for the Android app compiling.
 
-From the `androidApp/` directory, run the command: `./gradlew :app:generateDebugDotenv --info`. This will enable the log level *info* (there are many other [log levels including --debug](https://docs.gradle.org/current/userguide/logging.html#sec:choosing_a_log_level)). You can read all of your log statements here to debug the plugin. 
+From the `androidApp/` directory, run the command: `./gradlew :app:generateDebugDotenv --debug`. This will enable the log level *info* (there are many other [log levels including --debug](https://docs.gradle.org/current/userguide/logging.html#sec:choosing_a_log_level)). You can read all of your log statements here to debug the plugin. 
 
 ## Deployment 
 
