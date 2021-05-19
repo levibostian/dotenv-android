@@ -81,7 +81,7 @@ object CliUtil {
         val isLinux = !isWindows && !isMac // yes, there are more OSs out there but we are assuming you are only using 1 of these 3 options
 
         val cpuType = System.getProperty("os.arch")
-        val is64BitCpu = cpuType == "x86_64"
+        val is64BitCpu = cpuType == "x86_64" || cpuType == "amd64"
         val is32BitCpu = cpuType == "x86" || cpuType == "386" || cpuType == "i386"
         val isArm64Cpu = cpuType == "arm64"
 
