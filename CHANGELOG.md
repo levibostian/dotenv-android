@@ -1,3 +1,10 @@
+# [1.2.0](https://github.com/levibostian/dotenv-android/compare/1.1.0...1.2.0) (2021-05-19)
+
+
+### Features
+
+* does not require cli installed on system ([#19](https://github.com/levibostian/dotenv-android/issues/19)) ([baa1e5f](https://github.com/levibostian/dotenv-android/commit/baa1e5f24f7ebb135114a4bba7d363d9ac27dcb7))
+
 # [1.1.0](https://github.com/levibostian/dotenv-android/compare/1.0.0...1.1.0) (2021-05-17)
 
 
