@@ -37,7 +37,7 @@ class DotEnvPlugin : Plugin<Project> {
 
     companion object {
         const val PLUGIN_NAME = "dotenv"
-        const val COMPATIBLE_CLI_VERSION = "1.0.0" // the minimum version of the CLI tool `dotenv` that this gradle plugin supports.
+        const val COMPATIBLE_CLI_VERSION = "1.1.0" // the minimum version of the CLI tool `dotenv` that this gradle plugin supports.
         const val NEXT_MAJOR_CLI_VERSION = "2" // if `MIN_CLI_VERSION` is `3.X.X`, this value is 4.
 
         const val DOTENV_CLI_MANUAL_INSTALL_INSTRUCTIONS = "https://github.com/levibostian/dotenv#install"
