@@ -1,3 +1,10 @@
+# [1.3.0](https://github.com/levibostian/dotenv-android/compare/1.2.0...1.3.0) (2021-08-23)
+
+
+### Features
+
+* support empty variables ([#25](https://github.com/levibostian/dotenv-android/issues/25)) ([afab3c2](https://github.com/levibostian/dotenv-android/commit/afab3c2da13eb97c07ff457fd157e51655a4052c))
+
 # [1.2.0](https://github.com/levibostian/dotenv-android/compare/1.1.0...1.2.0) (2021-05-19)
 
 
