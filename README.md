@@ -90,5 +90,4 @@ We deploy to the [Gradle Plugin Portal](https://plugins.gradle.org/) to make usi
 
 dotenv-android is open for pull requests. Check out the [list of issues](https://github.com/levibostian/dotenv-android/issues) for tasks I am planning on working on. Check them out if you wish to contribute in that way.
 
-**Want to add features?** Before you decide to take a bunch of time and add functionality to the library, please, [create an issue]
-(https://github.com/levibostian/dotenv-android/issues/new) stating what you wish to add. This might save you some time in case your purpose does not fit well in the use cases of this project.
+**Want to add features?** Before you decide to take a bunch of time and add functionality to the library, please, [create an issue](https://github.com/levibostian/dotenv-android/issues/new) stating what you wish to add. This might save you some time in case your purpose does not fit well in the use cases of this project.
