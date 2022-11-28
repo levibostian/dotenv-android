@@ -89,10 +89,10 @@ publishing {
 
         // Allows you to deploy snapshot builds.
         // By default, we use production which points to the gradle plugin repository.
-        if (project.version.endsWith("SHAPSHOT")) {
+        //if (project.version.endsWith("SHAPSHOT")) {
             maven {
                 url = "https://maven.pkg.github.com/levibostian/dotenv-android"
             }
-        }
+//        }
     }
 }
