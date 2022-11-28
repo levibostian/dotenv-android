@@ -44,6 +44,6 @@ jobs:
         run: echo "::set-output name=VERSION::$(echo '${{ github.event.pull_request.head.ref }}' | sed -r 's/\//-/g')-SNAPSHOT"
 
       - name: Publish snapshot
-        run: PLUGIN_VERSION=0.0.1-SNAPSHOT ./gradlew publishPlugins
+        run: PLUGIN_VERSION=${{ steps.set-snapshot-version.outputs.VERSION }} ./gradlew publishAllPublicationsToSnapshotRepository
         env:
           GITHUB_TOKEN: ${{ secrets.MAVEN_PACKAGE_WRITE_GITHUB_TOKEN }}
