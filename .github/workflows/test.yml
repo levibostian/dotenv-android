@@ -8,8 +8,6 @@ jobs:
         os: [ubuntu-latest, macos-latest]
     runs-on: ${{ matrix.os }}
     name: Test plugin on OS ${{ matrix.os }}
-    # skip if '[skip ci]' exists in commit message 
-    if: ${{ !contains(format('{0} {1}', github.event.head_commit.message, github.event.pull_request.title), '[skip ci]') }}
     steps:
     - uses: actions/checkout@v2
     - name: Set up JDK
@@ -26,3 +24,26 @@ jobs:
     - name: Build Android app 
       run: ./gradlew clean :app:assembleDebug
       working-directory: androidApp
+
+  create-snapshot:
+    runs-on: ubuntu-latest
+    name: Publish snapshot build for testing
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up JDK
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'adopt'
+          java-version: '11' # We choose LTS: https://adoptopenjdk.net/
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v2
+
+      - name: Set snapshot version
+        id: set-snapshot-version
+        # Get the current branch name and replace all / characters with - as / is invalid in gradle names.
+        run: echo "::set-output name=VERSION::$(echo '${{ github.event.pull_request.head.ref }}' | sed -r 's/\//-/g')-SNAPSHOT"
+
+      - name: Publish snapshot
+        run: PLUGIN_VERSION=${{ steps.set-snapshot-version.outputs.VERSION }} ./gradlew publishPlugins
+        env:
+          GITHUB_TOKEN: ${{ secrets.MAVEN_PACKAGE_WRITE_GITHUB_TOKEN }}

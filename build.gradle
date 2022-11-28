@@ -5,7 +5,7 @@
  */
 
 buildscript {
-    ext.kotlin_version = '1.3.72'
+    ext.kotlin_version = '1.7.21'
     repositories {
         google()
         mavenCentral()
@@ -16,11 +16,12 @@ buildscript {
 }
 
 plugins {
-    id 'java-gradle-plugin' // authors the gradle plugin
-    id 'com.gradle.plugin-publish' version '0.14.0' // publishes the gradle plugin
-    id 'maven-publish' // generates plugin metadata
+    // publishes the gradle plugin
+    // this 1 plugin includes `java-gradle-plugin` for authoring the gradle plugin and
+    // `maven-publish` which generates the maven plugin metadata.
+    id 'com.gradle.plugin-publish' version '1.1.0'
+    id 'org.jetbrains.kotlin.jvm' version "$kotlin_version"
 }
-apply plugin: 'kotlin'
 
 repositories {
     google()
@@ -30,8 +31,8 @@ repositories {
 dependencies {
     implementation gradleApi()
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
-    implementation "org.apache.commons:commons-compress:1.2"
-    compileOnly("com.android.tools.build:gradle:3.6.3")
+    implementation 'org.apache.commons:commons-compress:1.21'
+    compileOnly('com.android.tools.build:gradle:4.0.2')
 }
 
 compileKotlin {
@@ -68,22 +69,30 @@ gradlePlugin {
         dotenvPlugin {
             id = 'earth.levi.dotenv-android'
             displayName = 'dotenv-android'
-            description = 'Android gradle plugin to use .env file in your Android app'
             implementationClass = 'earth.levi.dotenv.DotEnvPlugin'
         }
     }
 }
 
-/**
- * Allows us to use maven local repository for local development purposes. Not required for other purposes.
- */
 publishing {
     publications {
-        pluginPublication (MavenPublication) {
-            from    components.java
-            groupId    project.group
+        pluginPublication(MavenPublication) {
+            from components.java
+            groupId project.group
             artifactId "dotenv-android"
-            version    project.version
+            version project.version
+        }
+    }
+
+    repositories {
+        // publishToMavenLocal task is already added by the maven publish plugin
+
+        // Allows you to deploy snapshot builds.
+        // By default, we use production which points to the gradle plugin repository.
+        if (project.version.endsWith("SHAPSHOT")) {
+            maven {
+                url = "https://maven.pkg.github.com/levibostian/dotenv-android"
+            }
         }
     }
 }
